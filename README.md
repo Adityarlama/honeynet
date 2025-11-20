@@ -1,4 +1,4 @@
-# 🐝 Honeynet Project on Microsoft Azure
+# 🐝🕸 Honeynet Project on Microsoft Azure
 
 ## Global Attack Monitoring & Threat Visualization with Microsoft Sentinel
 
@@ -130,4 +130,113 @@ SecurityEvent
 | project TimeGenerated, Account, Computer, EventID, Activity , IPAddress
 ```
 
+---
 
+## 🌍 Log Enrichment & GeoIP Integration
+
+Raw logs do not include geographic information, so I enriched attacker IP addresses using a 55,000-row GeoIP watchlist imported into Sentinel.
+
+This allowed me to:
+
+- Map each attacker to a specific city, region, and country
+- Identify global attack patterns
+- Group high-activity IP ranges
+- Join geolocation data directly into KQL queries
+
+KQL Querry that I used for enrichment: 
+
+```
+let GeoIPDB_FULL = _GetWatchlist("geoip");
+let WindowsEvents = SecurityEvent
+    | where IpAddress == <attacker IP address>
+    | where EventID == 4625
+    | order by TimeGenerated desc
+    | evaluate ipv4_lookup(GeoIPDB_FULL, IpAddress, network);
+WindowsEvents
+```
+This transformed raw logs into meaningful threat intelligence.
+
+---
+
+## 🗺️ Visualization — Global Attack Map
+
+To visualize attack patterns, I built a custom Sentinel Workbook using a JSON-based map configuration.
+The map plotted each failed login attempt geographically, with clustering based on event volume.
+
+This visualization made it immediately clear:
+
+- Which regions were the most aggressive
+- The distribution of global brute-force activity
+- The intensity of scanning and probing within hours of exposure
+
+
+
+<p align="center">
+  <img src="https://i.imgur.com/z9M6QIE.png" alt="Page 1" />
+</p>
+
+---
+
+## 📊 Key Findings from 24 Hours of Logs
+
+The honeynet recorded tens of thousands of brute-force attempts worldwide.
+Below are the top regions by unsuccessful login attempts (Event ID 4625):
+
+| Region                     | Attempts |
+| -------------------------- | -------- |
+| Gwangmyeong (South Korea)  | 3.98K    |
+| Bangshal (Bangladesh)      | 3.13K    |
+| Akola (India)              | 3.14K    |
+| Brussels (Belgium)         | 3.12K    |
+| Ciamis (Indonesia)         | 3.11K    |
+| United States (Various)    | 3.10K    |
+| Central (Hong Kong)        | 3.10K    |
+| Contoocook (United States) | 2.31K    |
+| Paignton (United Kingdom)  | 801      |
+| Other                      | 2.72K    |
+
+
+Additional Observations
+- Attack activity begins within minutes of exposure
+- RDP brute-force attempts dominate
+- Traffic originates from compromised global hosts, not just localized scanners
+- Automated bots attack newly created VMs extremely quickly
+- The volume of logs rapidly becomes large enough for meaningful SIEM practice
+
+--- 
+
+## 🧠 Skills Demonstrated
+
+### Cloud Security
+- Azure architecture design
+- Network Security Groups
+- Resource isolation and sandboxing
+
+### Threat Analysis
+- Identification of brute-force and scanning activity
+- Understanding attacker behavior in the wild
+  
+### SIEM & Log Analytics
+- Microsoft Sentinel configuration
+- Log Analytics Workspace management
+- Watchlist creation and lookup operations
+- KQL proficiency (joins, enrichments, aggregations)
+
+### Visualization & Reporting
+- Custom workbook building
+- Attack map visualization
+- Data correlation and summarization
+
+---
+
+## 📌 Summary
+
+This project successfully demonstrates the end-to-end deployment of a honeynet, real-world data collection, security event enrichment, SIEM analysis, and threat visualization.
+It replicates a realistic SOC workflow, involving:
+- Log ingestion
+- Querying
+- Enrichment
+- Interpretation
+- Reporting
+
+The final dataset and attack map provide a clear, visual story of global attack behavior observed in a 24-hour window.
