@@ -47,14 +47,10 @@ Isolated Resource Group (Azure)
 ```
 
 This structure ensured:
-
-Controlled isolation
-
-Safe exposure
-
-Accurate log ingestion
-
-Comprehensive threat analysis
+- Controlled isolation
+- Safe exposure
+- Accurate log ingestion
+- Comprehensive threat analysis
 
 ---
 
@@ -84,7 +80,54 @@ Comprehensive threat analysis
 
 ---
 
-# Procedure
+## 🎯 Objectives
 
-## Step 1
+The goals of this project were to:
+
+- Deploy a cloud-hosted environment vulnerable by design
+- Capture authentic attacker behavior
+- Analyze logs at scale using Kusto Query Language (KQL)
+- Enrich raw logs with geographic data
+- Produce visual insights into global threat activity
+- Practice SIEM workflows used in real SOC operations
+
+## 🧪 Environment Setup & Exposure
+
+To generate real attack traffic, I deployed a Windows 10 Virtual Machine on Azure, placed it inside a dedicated resource group, and configured it as a honeypot:
+
+Key configurations applied:
+
+- All inbound traffic allowed in the Network Security Group
+- Windows Firewall disabled (Public, Private, Domain)
+- Public-facing RDP enabled
+- Machine left exposed for 24 hours without user activity
+- Immediately after exposure, automated scanners and brute-force bots began interacting with the machine.
+
+---
+
+## 📝 Log Collection & Forwarding
+
+All security logs were forwarded to a Log Analytics Workspace and processed through Microsoft Sentinel.
+
+Sentinel configuration included:
+
+- Enabling Windows Security Events via AMA
+- Creating a Data Collection Rule (DCR)
+- Connecting the VM as a data source
+- Validating ingestion of:
+  - Event ID 4625 (failed logins)
+  - Event ID 4624 (successful logins)
+  - Authentication attempts
+  - Network traffic events
+
+KQL was used throughout to extract, filter, and analyze event data.
+
+The KQL query I used:
+
+```
+SecurityEvent
+| where EventID == 4625
+| project TimeGenerated, Account, Computer, EventID, Activity , IPAddress
+```
+
 
