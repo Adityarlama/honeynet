@@ -4,10 +4,10 @@
 
 ### 📌 Overview
 
-This project demonstrates the creation of a **honeynet**—a deliberately vulnerable cloud-hosted environment used to attract, observe, and analyze real-world cyberattacks.
-Using **Microsoft Azure** as the virtual host platform and **Microsoft Sentinel** as the **SIEM**, I exposed a Windows 10 VM to the internet, collected large volumes of security events, enriched the logs with geolocation data, and visualized global attack patterns using an attack map.
+This project documents a fully deployed honeynet built on Microsoft Azure, designed to attract real-world attackers and analyze global malicious activity.
+I deployed an intentionally vulnerable Windows 10 VM, exposed it to the internet, collected security events using Microsoft Sentinel, enriched the attack data with geolocation metadata, and visualized global threat patterns through an interactive attack map.
 
-Over a 24-hour period, the honeynet recorded tens of thousands of _Event ID 4625_ (failed logins) originating from hundreds of regions across the world.
+Over a 24-hour period, the honeynet generated tens of thousands of failed login attempts, providing a real dataset for SIEM analysis, KQL querying, and threat visualization.
 
 --- 
 
@@ -27,21 +27,64 @@ It's a network with intentionally disabled security controls (like firewalls) so
 
 ## 🏗️ Architecture Diagram
 
-Azure Subscription </br>
-│ </br>
-└── Resource Group (Isolated Sandbox)</br>
-    │
-    ├── Windows 10 Virtual Machine (honeypot)
-    │     ├── Public IP
-    │     ├── All firewalls disabled
-    │     └── NSG inbound “Allow Any” rule
-    │
-    ├── Virtual Network (VNet) + Subnet
-    │
-    ├── Log Analytics Workspace (LAW)
-    │
-    └── Microsoft Sentinel
-          ├── Windows Security Events via AMA
-          ├── Watchlist (GeoIP Database)
-          └── Attack Map Workbook
+```
+Isolated Resource Group (Azure)
+│
+├── Windows 10 Honeypot VM (Firewalls Disabled)
+│     ├── Public IP Address
+│     ├── NSG Rule: Allow All Inbound Traffic
+│     └── Event ID 4625 generation at scale
+│
+├── Azure Virtual Network + Subnet
+│
+├── Log Analytics Workspace (Central Log Store)
+│
+└── Microsoft Sentinel
+      ├── Windows Security Events via AMA
+      ├── 55K-row GeoIP Watchlist
+      └── Attack Map Workbook
+
+```
+
+This structure ensured:
+
+Controlled isolation
+
+Safe exposure
+
+Accurate log ingestion
+
+Comprehensive threat analysis
+
+---
+
+## 🧰 Technologies Used
+
+### Cloud Infrastructure
+
+- Microsoft Azure
+- Azure Virtual Machines
+- Azure Virtual Network (VNet)
+- Network Security Groups (NSG)
+- Azure Resource Groups
+
+### Security & Monitoring
+
+- Microsoft Sentinel (SIEM)
+- Log Analytics Workspace (LAW)
+- Windows Security Events via AMA
+- Watchlists (GeoIP enrichment)
+- Kusto Query Language (KQL)
+
+### Data Tools
+
+- CSV-based geolocation mapping
+- Sentinel Attack Map Workbook
+- map.json (Sentinel workbook import)
+
+---
+
+# Procedure
+
+## Step 1
 
