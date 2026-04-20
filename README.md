@@ -11,7 +11,7 @@ Over a 24-hour period, the honeynet generated tens of thousands of failed login 
 
 --- 
 
-## 🧠 What is a Honeynet?
+## What is a Honeynet?
 
 A **honeynet** is a decoy network designed to mimic a real environment.
 It's a network with intentionally disabled security controls (like firewalls) so attackers are encouraged to interact with it.
@@ -25,7 +25,7 @@ It's a network with intentionally disabled security controls (like firewalls) so
 
 ---
 
-## 🏗️ Architecture Diagram
+## Architecture Diagram
 
 ```
 Isolated Resource Group (Azure)
@@ -59,7 +59,6 @@ This structure ensured:
 ### Cloud Infrastructure
 
 - Microsoft Azure
-- Azure Virtual Machines
 - Azure Virtual Network (VNet)
 - Network Security Groups (NSG)
 - Azure Resource Groups
